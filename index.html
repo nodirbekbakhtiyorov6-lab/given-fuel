@@ -1,35 +1,36 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuel Board — раздача топлива по трак-юнитам</title>
+<title>Fuel Handout Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#1c1f26;
-    --panel:#242832;
-    --panel-2:#2c313d;
-    --line:#3a4150;
-    --text:#e6e8ec;
-    --text-dim:#8890a0;
-    --teal:#48b89a;
-    --given:#3fae6a;
-    --not_yet:#d9a441;
-    --not_available:#d6524a;
-    --other:#5b8fd6;
+    --bg:#111213;
+    --panel:#1a1b1d;
+    --panel-2:#212325;
+    --line:#333536;
+    --text:#eceae6;
+    --text-dim:#8f9092;
+    --orange:#e8600f;
+    --given:#3f9142;
+    --not_yet:#d1a012;
+    --not_available:#c8382b;
+    --other:#6b7280;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--bg);
     color:var(--text);
-    font-family:'Inter',sans-serif;
+    font-family:'Work Sans',sans-serif;
     min-height:100vh;
-    padding:36px 18px 90px;
+    padding:0 16px 90px;
   }
-  .wrap{max-width:780px;margin:0 auto;}
+  .top-bar{height:6px;background:var(--orange);}
+  .wrap{max-width:780px;margin:0 auto;padding-top:32px;}
 
   header{
     display:flex;
@@ -37,75 +38,60 @@
     align-items:flex-end;
     flex-wrap:wrap;
     gap:14px;
-    margin-bottom:20px;
-    border-bottom:2px solid var(--teal);
+    margin-bottom:24px;
     padding-bottom:16px;
-  }
-  .model{
-    font-family:'JetBrains Mono',monospace;
-    font-size:12px;
-    letter-spacing:0.14em;
-    color:var(--text-dim);
-    margin:0 0 4px;
+    border-bottom:2px solid var(--line);
   }
   h1{
-    font-family:'Bebas Neue',sans-serif;
+    font-family:'Anton',sans-serif;
     font-weight:400;
-    font-size:36px;
-    letter-spacing:0.02em;
+    font-size:34px;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
     margin:0;
     color:var(--text);
   }
-  h1 span{color:var(--teal);}
   .shift-input{
     background:var(--panel);
     border:1px solid var(--line);
-    border-radius:4px;
+    border-radius:2px;
     color:var(--text);
-    font-family:'Inter',sans-serif;
+    font-family:'Work Sans',sans-serif;
     font-size:13px;
-    padding:8px 10px;
+    padding:9px 10px;
     outline:none;
     width:210px;
   }
-  .shift-input:focus{border-color:var(--teal);}
+  .shift-input:focus{border-color:var(--orange);}
   .shift-input::placeholder{color:var(--text-dim);}
 
   .summary{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:8px;
-    margin-bottom:18px;
-  }
-  .sum-cell{
-    background:var(--panel);
+    gap:1px;
+    background:var(--line);
     border:1px solid var(--line);
-    border-radius:5px;
-    padding:12px 8px;
-    text-align:center;
-    border-top:3px solid transparent;
+    margin-bottom:20px;
   }
-  .sum-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;}
-  .sum-label{font-size:11px;color:var(--text-dim);margin-top:3px;}
+  .sum-cell{background:var(--panel);padding:14px 8px;text-align:center;}
+  .sum-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;}
+  .sum-label{font-size:11px;color:var(--text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em;}
 
   .panel{
     background:var(--panel);
     border:1px solid var(--line);
-    border-radius:6px;
-    overflow:hidden;
-    margin-bottom:16px;
+    margin-bottom:18px;
   }
   table{width:100%;border-collapse:collapse;}
   thead th{
-    font-family:'Inter',sans-serif;
     font-size:12px;
     font-weight:600;
     color:var(--text-dim);
     text-align:left;
     padding:12px 14px;
-    border-bottom:1px solid var(--line);
+    border-bottom:2px solid var(--line);
   }
-  th.col-status, td.col-status{width:170px;}
+  th.col-status, td.col-status{width:160px;}
   th.col-del, td.col-del{width:34px;}
   tbody tr{border-bottom:1px solid var(--line);}
   tbody tr:last-child{border-bottom:none;}
@@ -116,37 +102,39 @@
     background:var(--panel-2);
     border:1px solid var(--line);
     color:var(--text);
-    font-family:'JetBrains Mono',monospace;
+    font-family:'IBM Plex Mono',monospace;
     font-size:14px;
     padding:8px 10px;
-    border-radius:4px;
+    border-radius:2px;
     outline:none;
   }
-  .note-input{font-family:'Inter',sans-serif;font-size:13px;}
-  .unit-input:focus, .note-input:focus{border-color:var(--teal);}
+  .note-input{font-family:'Work Sans',sans-serif;font-size:13px;}
+  .unit-input:focus, .note-input:focus{border-color:var(--orange);}
 
   .status-select{
     width:100%;
     padding:9px 8px;
-    border-radius:4px;
+    border-radius:2px;
     border:1px solid var(--line);
-    font-family:'Inter',sans-serif;
+    font-family:'Work Sans',sans-serif;
     font-size:13px;
     font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
     outline:none;
     cursor:pointer;
     -webkit-appearance:none;
     appearance:none;
     background-repeat:no-repeat;
     background-position:right 8px center;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238890a0'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238f9092'/></svg>");
     padding-right:24px;
   }
-  .status-select.st-not_yet{background-color:rgba(217,164,65,.16);border-color:var(--not_yet);color:var(--not_yet);}
-  .status-select.st-given{background-color:rgba(63,174,106,.16);border-color:var(--given);color:var(--given);}
-  .status-select.st-not_available{background-color:rgba(214,82,74,.16);border-color:var(--not_available);color:var(--not_available);}
-  .status-select.st-other{background-color:rgba(91,143,214,.16);border-color:var(--other);color:var(--other);}
-  .status-select option{background:var(--panel-2);color:var(--text);}
+  .status-select.st-not_yet{background-color:rgba(209,160,18,.15);border-color:var(--not_yet);color:var(--not_yet);}
+  .status-select.st-given{background-color:rgba(63,145,66,.15);border-color:var(--given);color:var(--given);}
+  .status-select.st-not_available{background-color:rgba(200,56,43,.15);border-color:var(--not_available);color:var(--not_available);}
+  .status-select.st-other{background-color:rgba(107,114,128,.15);border-color:var(--other);color:var(--other);}
+  .status-select option{background:var(--panel-2);color:var(--text);text-transform:none;}
 
   .del-btn{
     background:none;
@@ -161,18 +149,18 @@
 
   .actions{display:flex;gap:10px;flex-wrap:wrap;}
   button.action{
-    font-family:'Inter',sans-serif;
+    font-family:'Work Sans',sans-serif;
     font-size:13px;
     font-weight:600;
     padding:11px 18px;
-    border-radius:4px;
+    border-radius:2px;
     border:1px solid var(--line);
     background:var(--panel-2);
     color:var(--text);
     cursor:pointer;
   }
-  button.action:hover{border-color:var(--teal);}
-  button.primary{background:var(--teal);border-color:var(--teal);color:#0d211c;flex:1;font-size:14px;}
+  button.action:hover{border-color:var(--orange);}
+  button.primary{background:var(--orange);border-color:var(--orange);color:#1c0900;flex:1;font-size:14px;}
   button.primary:hover{filter:brightness(1.06);}
 
   .save-note{font-size:12px;color:var(--text-dim);margin-top:10px;text-align:center;}
@@ -201,20 +189,19 @@
     .print-only table{width:100%;border-collapse:collapse;font-size:13px;}
     .print-only th, .print-only td{border:1px solid #ccc;padding:8px 10px;text-align:left;}
     .print-only th{background:#eee;}
-    .print-only .badge{display:inline-block;padding:3px 10px;border-radius:3px;font-size:12px;font-weight:bold;color:#fff;}
+    .print-only .badge{display:inline-block;padding:3px 10px;border-radius:2px;font-size:12px;font-weight:bold;color:#fff;text-transform:uppercase;}
     @page{margin:16mm;}
   }
 </style>
 </head>
 <body>
 
+<div class="top-bar"></div>
+
 <div class="wrap">
   <header>
-    <div>
-      <p class="model">FUEL BOARD · FRHT CASCADIA FLEET</p>
-      <h1>Раздача <span>топлива</span></h1>
-    </div>
-    <input type="text" class="shift-input" id="shiftLabel" placeholder="напр. Ночная смена, 14.09">
+    <h1>Fuel Handout</h1>
+    <input type="text" class="shift-input" id="shiftLabel" placeholder="Shift, e.g. Night 9/14">
   </header>
 
   <div class="summary" id="summary"></div>
@@ -223,9 +210,9 @@
     <table>
       <thead>
         <tr>
-          <th>Юнит трака</th>
-          <th class="col-status">Статус</th>
-          <th>Примечание</th>
+          <th>Unit</th>
+          <th class="col-status">Status</th>
+          <th>Notes</th>
           <th class="col-del"></th>
         </tr>
       </thead>
@@ -234,14 +221,14 @@
   </div>
 
   <div class="actions">
-    <button class="action" id="addRowBtn">+ Добавить трак</button>
-    <button class="action" id="resetBtn">Новая смена (сброс статусов)</button>
+    <button class="action" id="addRowBtn">Add unit</button>
+    <button class="action" id="resetBtn">Reset for new shift</button>
   </div>
   <br>
   <div class="actions">
-    <button class="action primary" id="pdfBtn">Скачать PDF для группы</button>
+    <button class="action primary" id="pdfBtn">Download PDF</button>
   </div>
-  <p class="pdf-hint">Откроется диалог печати — выберите принтер «Сохранить как PDF» и нажмите «Сохранить».</p>
+  <p class="pdf-hint">Opens the print dialog — choose "Save as PDF" and save.</p>
   <p class="save-note" id="saveNote">&nbsp;</p>
 </div>
 
@@ -250,16 +237,16 @@
 <script>
   const STATUSES = ['not_yet','given','not_available','other'];
   const STATUS_LABEL = {
-    not_yet:'Ещё нет',
-    given:'Выдано',
-    not_available:'Недоступно',
-    other:'Другое'
+    not_yet:'Not yet',
+    given:'Given',
+    not_available:'Not available',
+    other:'Other'
   };
   const STATUS_HEX = {
-    not_yet:'#d9a441',
-    given:'#3fae6a',
-    not_available:'#d6524a',
-    other:'#5b8fd6'
+    not_yet:'#d1a012',
+    given:'#3f9142',
+    not_available:'#c8382b',
+    other:'#6b7280'
   };
 
   let trucks = [];
@@ -291,7 +278,7 @@
   }
 
   function scheduleSave(){
-    document.getElementById('saveNote').textContent = 'Сохранение…';
+    document.getElementById('saveNote').textContent = 'Saving…';
     clearTimeout(saveTimer);
     saveTimer = setTimeout(saveData, 500);
   }
@@ -301,10 +288,10 @@
       await window.storage.set('fuel-board', JSON.stringify({ trucks, shiftLabel }), true);
       const now = new Date();
       document.getElementById('saveNote').textContent =
-        'Сохранено · доступно всем, у кого открыт этот борт · ' +
-        now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+        'Saved · shared with anyone who opens this board · ' +
+        now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
     }catch(e){
-      document.getElementById('saveNote').textContent = 'Не удалось сохранить';
+      document.getElementById('saveNote').textContent = 'Save failed';
     }
   }
 
@@ -318,7 +305,7 @@
       const tdUnit = document.createElement('td');
       const unitInput = document.createElement('input');
       unitInput.className = 'unit-input';
-      unitInput.placeholder = '№ юнита';
+      unitInput.placeholder = 'unit #';
       unitInput.value = t.unit;
       unitInput.addEventListener('input', e => { t.unit = e.target.value; scheduleSave(); });
       tdUnit.appendChild(unitInput);
@@ -345,7 +332,7 @@
       const tdNote = document.createElement('td');
       const noteInput = document.createElement('input');
       noteInput.className = 'note-input';
-      noteInput.placeholder = 'примечание';
+      noteInput.placeholder = 'note';
       noteInput.value = t.note;
       noteInput.addEventListener('input', e => { t.note = e.target.value; scheduleSave(); });
       tdNote.appendChild(noteInput);
@@ -355,7 +342,7 @@
       const delBtn = document.createElement('button');
       delBtn.className = 'del-btn';
       delBtn.textContent = '×';
-      delBtn.title = 'Удалить трак';
+      delBtn.title = 'Remove unit';
       delBtn.addEventListener('click', () => {
         trucks = trucks.filter(x => x.id !== t.id);
         render();
@@ -379,7 +366,6 @@
     STATUSES.forEach(s => {
       const cell = document.createElement('div');
       cell.className = 'sum-cell';
-      cell.style.borderTopColor = STATUS_HEX[s];
       cell.innerHTML =
         `<div class="sum-num" style="color:${STATUS_HEX[s]}">${counts[s]}</div>
          <div class="sum-label">${STATUS_LABEL[s]}</div>`;
@@ -394,7 +380,7 @@
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    if(!confirm('Сбросить статусы всех траков на "Ещё нет"? Примечания и юниты останутся.')) return;
+    if(!confirm('Reset all statuses to "Not yet"? Units and notes stay.')) return;
     trucks.forEach(t => { t.status = 'not_yet'; t.note = ''; });
     render();
     scheduleSave();
@@ -413,8 +399,8 @@
   function buildPrintable(){
     const el = document.getElementById('printable');
     const now = new Date();
-    const dateStr = now.toLocaleDateString('ru-RU');
-    const timeStr = now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+    const dateStr = now.toLocaleDateString('en-US');
+    const timeStr = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
 
     let rowsHtml = '';
     trucks.forEach(t => {
@@ -426,10 +412,10 @@
     });
 
     el.innerHTML = `
-      <h2>Раздача топлива по трак-юнитам</h2>
-      <div class="p-sub">${escapeHtml(shiftLabel) || 'Смена не указана'} · сформировано ${dateStr} в ${timeStr}</div>
+      <h2>Fuel Handout — ${escapeHtml(shiftLabel) || 'Shift not set'}</h2>
+      <div class="p-sub">Generated ${dateStr}, ${timeStr}</div>
       <table>
-        <thead><tr><th>Юнит трака</th><th>Статус</th><th>Примечание</th></tr></thead>
+        <thead><tr><th>Unit</th><th>Status</th><th>Notes</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
     `;
