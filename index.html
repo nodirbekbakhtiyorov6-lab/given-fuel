@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuel Board — раздача топлива по трак-юнитам</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1c1f26;
+    --panel:#242832;
+    --panel-2:#2c313d;
+    --line:#3a4150;
+    --text:#e6e8ec;
+    --text-dim:#8890a0;
+    --teal:#48b89a;
+    --given:#3fae6a;
+    --not_yet:#d9a441;
+    --not_available:#d6524a;
+    --other:#5b8fd6;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:36px 18px 90px;
+  }
+  .wrap{max-width:780px;margin:0 auto;}
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-bottom:20px;
+    border-bottom:2px solid var(--teal);
+    padding-bottom:16px;
+  }
+  .model{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--text-dim);
+    margin:0 0 4px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-weight:400;
+    font-size:36px;
+    letter-spacing:0.02em;
+    margin:0;
+    color:var(--text);
+  }
+  h1 span{color:var(--teal);}
+  .shift-input{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    padding:8px 10px;
+    outline:none;
+    width:210px;
+  }
+  .shift-input:focus{border-color:var(--teal);}
+  .shift-input::placeholder{color:var(--text-dim);}
+
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .sum-cell{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:12px 8px;
+    text-align:center;
+    border-top:3px solid transparent;
+  }
+  .sum-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;}
+  .sum-label{font-size:11px;color:var(--text-dim);margin-top:3px;}
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-dim);
+    text-align:left;
+    padding:12px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  th.col-status, td.col-status{width:170px;}
+  th.col-del, td.col-del{width:34px;}
+  tbody tr{border-bottom:1px solid var(--line);}
+  tbody tr:last-child{border-bottom:none;}
+  td{padding:8px 10px;vertical-align:middle;}
+
+  .unit-input, .note-input{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    padding:8px 10px;
+    border-radius:4px;
+    outline:none;
+  }
+  .note-input{font-family:'Inter',sans-serif;font-size:13px;}
+  .unit-input:focus, .note-input:focus{border-color:var(--teal);}
+
+  .status-select{
+    width:100%;
+    padding:9px 8px;
+    border-radius:4px;
+    border:1px solid var(--line);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    outline:none;
+    cursor:pointer;
+    -webkit-appearance:none;
+    appearance:none;
+    background-repeat:no-repeat;
+    background-position:right 8px center;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238890a0'/></svg>");
+    padding-right:24px;
+  }
+  .status-select.st-not_yet{background-color:rgba(217,164,65,.16);border-color:var(--not_yet);color:var(--not_yet);}
+  .status-select.st-given{background-color:rgba(63,174,106,.16);border-color:var(--given);color:var(--given);}
+  .status-select.st-not_available{background-color:rgba(214,82,74,.16);border-color:var(--not_available);color:var(--not_available);}
+  .status-select.st-other{background-color:rgba(91,143,214,.16);border-color:var(--other);color:var(--other);}
+  .status-select option{background:var(--panel-2);color:var(--text);}
+
+  .del-btn{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:18px;
+    cursor:pointer;
+    line-height:1;
+    padding:4px;
+  }
+  .del-btn:hover{color:var(--not_available);}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;}
+  button.action{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:11px 18px;
+    border-radius:4px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--text);
+    cursor:pointer;
+  }
+  button.action:hover{border-color:var(--teal);}
+  button.primary{background:var(--teal);border-color:var(--teal);color:#0d211c;flex:1;font-size:14px;}
+  button.primary:hover{filter:brightness(1.06);}
+
+  .save-note{font-size:12px;color:var(--text-dim);margin-top:10px;text-align:center;}
+  .pdf-hint{font-size:12px;color:var(--text-dim);margin-top:8px;text-align:center;}
+
+  /* ---- Print / PDF ---- */
+  .print-only{display:none;}
+
+  @media print{
+    body *{visibility:hidden;}
+    .print-only, .print-only *{visibility:visible;}
+    .print-only{
+      display:block;
+      position:absolute;
+      top:0;left:0;
+      width:100%;
+      background:#fff;
+      color:#111;
+      padding:10px 20px;
+      font-family:Arial, sans-serif;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    .print-only h2{font-size:20px;margin:0 0 2px;}
+    .print-only .p-sub{color:#555;font-size:13px;margin-bottom:16px;}
+    .print-only table{width:100%;border-collapse:collapse;font-size:13px;}
+    .print-only th, .print-only td{border:1px solid #ccc;padding:8px 10px;text-align:left;}
+    .print-only th{background:#eee;}
+    .print-only .badge{display:inline-block;padding:3px 10px;border-radius:3px;font-size:12px;font-weight:bold;color:#fff;}
+    @page{margin:16mm;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="model">FUEL BOARD · FRHT CASCADIA FLEET</p>
+      <h1>Раздача <span>топлива</span></h1>
+    </div>
+    <input type="text" class="shift-input" id="shiftLabel" placeholder="напр. Ночная смена, 14.09">
+  </header>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="panel">
+    <table>
+      <thead>
+        <tr>
+          <th>Юнит трака</th>
+          <th class="col-status">Статус</th>
+          <th>Примечание</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="action" id="addRowBtn">+ Добавить трак</button>
+    <button class="action" id="resetBtn">Новая смена (сброс статусов)</button>
+  </div>
+  <br>
+  <div class="actions">
+    <button class="action primary" id="pdfBtn">Скачать PDF для группы</button>
+  </div>
+  <p class="pdf-hint">Откроется диалог печати — выберите принтер «Сохранить как PDF» и нажмите «Сохранить».</p>
+  <p class="save-note" id="saveNote">&nbsp;</p>
+</div>
+
+<div class="print-only" id="printable"></div>
+
+<script>
+  const STATUSES = ['not_yet','given','not_available','other'];
+  const STATUS_LABEL = {
+    not_yet:'Ещё нет',
+    given:'Выдано',
+    not_available:'Недоступно',
+    other:'Другое'
+  };
+  const STATUS_HEX = {
+    not_yet:'#d9a441',
+    given:'#3fae6a',
+    not_available:'#d6524a',
+    other:'#5b8fd6'
+  };
+
+  let trucks = [];
+  let shiftLabel = '';
+  let saveTimer = null;
+
+  function defaultTrucks(){
+    return Array.from({length:6}, () => ({ id: cryptoId(), unit:'', status:'not_yet', note:'' }));
+  }
+  function cryptoId(){
+    return 't' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+  }
+
+  async function loadData(){
+    try{
+      const res = await window.storage.get('fuel-board', true);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        trucks = parsed.trucks && parsed.trucks.length ? parsed.trucks : defaultTrucks();
+        shiftLabel = parsed.shiftLabel || '';
+      } else {
+        trucks = defaultTrucks();
+      }
+    }catch(e){
+      trucks = defaultTrucks();
+    }
+    document.getElementById('shiftLabel').value = shiftLabel;
+    render();
+  }
+
+  function scheduleSave(){
+    document.getElementById('saveNote').textContent = 'Сохранение…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveData, 500);
+  }
+
+  async function saveData(){
+    try{
+      await window.storage.set('fuel-board', JSON.stringify({ trucks, shiftLabel }), true);
+      const now = new Date();
+      document.getElementById('saveNote').textContent =
+        'Сохранено · доступно всем, у кого открыт этот борт · ' +
+        now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+    }catch(e){
+      document.getElementById('saveNote').textContent = 'Не удалось сохранить';
+    }
+  }
+
+  function render(){
+    renderSummary();
+    const tbody = document.getElementById('rows');
+    tbody.innerHTML = '';
+    trucks.forEach((t) => {
+      const tr = document.createElement('tr');
+
+      const tdUnit = document.createElement('td');
+      const unitInput = document.createElement('input');
+      unitInput.className = 'unit-input';
+      unitInput.placeholder = '№ юнита';
+      unitInput.value = t.unit;
+      unitInput.addEventListener('input', e => { t.unit = e.target.value; scheduleSave(); });
+      tdUnit.appendChild(unitInput);
+
+      const tdStatus = document.createElement('td');
+      tdStatus.className = 'col-status';
+      const select = document.createElement('select');
+      select.className = 'status-select st-' + t.status;
+      STATUSES.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = STATUS_LABEL[s];
+        if(s === t.status) opt.selected = true;
+        select.appendChild(opt);
+      });
+      select.addEventListener('change', e => {
+        t.status = e.target.value;
+        select.className = 'status-select st-' + t.status;
+        renderSummary();
+        scheduleSave();
+      });
+      tdStatus.appendChild(select);
+
+      const tdNote = document.createElement('td');
+      const noteInput = document.createElement('input');
+      noteInput.className = 'note-input';
+      noteInput.placeholder = 'примечание';
+      noteInput.value = t.note;
+      noteInput.addEventListener('input', e => { t.note = e.target.value; scheduleSave(); });
+      tdNote.appendChild(noteInput);
+
+      const tdDel = document.createElement('td');
+      tdDel.className = 'col-del';
+      const delBtn = document.createElement('button');
+      delBtn.className = 'del-btn';
+      delBtn.textContent = '×';
+      delBtn.title = 'Удалить трак';
+      delBtn.addEventListener('click', () => {
+        trucks = trucks.filter(x => x.id !== t.id);
+        render();
+        scheduleSave();
+      });
+      tdDel.appendChild(delBtn);
+
+      tr.appendChild(tdUnit);
+      tr.appendChild(tdStatus);
+      tr.appendChild(tdNote);
+      tr.appendChild(tdDel);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderSummary(){
+    const counts = { given:0, not_yet:0, not_available:0, other:0 };
+    trucks.forEach(t => counts[t.status]++);
+    const summary = document.getElementById('summary');
+    summary.innerHTML = '';
+    STATUSES.forEach(s => {
+      const cell = document.createElement('div');
+      cell.className = 'sum-cell';
+      cell.style.borderTopColor = STATUS_HEX[s];
+      cell.innerHTML =
+        `<div class="sum-num" style="color:${STATUS_HEX[s]}">${counts[s]}</div>
+         <div class="sum-label">${STATUS_LABEL[s]}</div>`;
+      summary.appendChild(cell);
+    });
+  }
+
+  document.getElementById('addRowBtn').addEventListener('click', () => {
+    trucks.push({ id: cryptoId(), unit:'', status:'not_yet', note:'' });
+    render();
+    scheduleSave();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if(!confirm('Сбросить статусы всех траков на "Ещё нет"? Примечания и юниты останутся.')) return;
+    trucks.forEach(t => { t.status = 'not_yet'; t.note = ''; });
+    render();
+    scheduleSave();
+  });
+
+  document.getElementById('shiftLabel').addEventListener('input', e => {
+    shiftLabel = e.target.value;
+    scheduleSave();
+  });
+
+  function escapeHtml(str){
+    if(!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function buildPrintable(){
+    const el = document.getElementById('printable');
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('ru-RU');
+    const timeStr = now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+
+    let rowsHtml = '';
+    trucks.forEach(t => {
+      rowsHtml += `<tr>
+        <td>${escapeHtml(t.unit) || '—'}</td>
+        <td><span class="badge" style="background:${STATUS_HEX[t.status]};">${STATUS_LABEL[t.status]}</span></td>
+        <td>${escapeHtml(t.note) || ''}</td>
+      </tr>`;
+    });
+
+    el.innerHTML = `
+      <h2>Раздача топлива по трак-юнитам</h2>
+      <div class="p-sub">${escapeHtml(shiftLabel) || 'Смена не указана'} · сформировано ${dateStr} в ${timeStr}</div>
+      <table>
+        <thead><tr><th>Юнит трака</th><th>Статус</th><th>Примечание</th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+  }
+
+  document.getElementById('pdfBtn').addEventListener('click', () => {
+    buildPrintable();
+    setTimeout(() => window.print(), 50);
+  });
+
+  loadData();
+</script>
+
+</body>
+</html>
