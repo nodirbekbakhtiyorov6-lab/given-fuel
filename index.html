@@ -190,6 +190,10 @@
     .print-only th, .print-only td{border:1px solid #ccc;padding:8px 10px;text-align:left;}
     .print-only th{background:#eee;}
     .print-only .badge{display:inline-block;padding:3px 10px;border-radius:2px;font-size:12px;font-weight:bold;color:#fff;text-transform:uppercase;}
+    .print-only .p-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+    .print-only .p-sum-cell{border:1px solid #ccc;padding:10px 6px;text-align:center;}
+    .print-only .p-sum-num{font-size:20px;font-weight:bold;}
+    .print-only .p-sum-label{font-size:11px;color:#555;text-transform:uppercase;margin-top:3px;}
     @page{margin:16mm;}
   }
 </style>
@@ -402,6 +406,16 @@
     const dateStr = now.toLocaleDateString('en-US');
     const timeStr = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
 
+    const counts = { given:0, not_yet:0, not_available:0, other:0 };
+    trucks.forEach(t => counts[t.status]++);
+    let summaryHtml = '';
+    STATUSES.forEach(s => {
+      summaryHtml += `<div class="p-sum-cell">
+        <div class="p-sum-num" style="color:${STATUS_HEX[s]}">${counts[s]}</div>
+        <div class="p-sum-label">${STATUS_LABEL[s]}</div>
+      </div>`;
+    });
+
     let rowsHtml = '';
     trucks.forEach(t => {
       rowsHtml += `<tr>
@@ -413,7 +427,8 @@
 
     el.innerHTML = `
       <h2>Fuel Handout — ${escapeHtml(shiftLabel) || 'Shift not set'}</h2>
-      <div class="p-sub">Generated ${dateStr}, ${timeStr}</div>
+      <div class="p-sub">Generated ${dateStr}, ${timeStr} · ${trucks.length} units total</div>
+      <div class="p-summary">${summaryHtml}</div>
       <table>
         <thead><tr><th>Unit</th><th>Status</th><th>Notes</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
