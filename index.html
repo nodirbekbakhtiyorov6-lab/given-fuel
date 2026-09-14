@@ -3,33 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuel Handout Board</title>
+<!-- Название вкладки изменено для проверки кэша -->
+<title>Fuel Board - PURPLE EDITION</title>
 <style>
   :root {
-    --bg: #111827;
-    --surface: #1f2937;
-    --border: #374151;
-    --border-hover: #4b5563;
-    --text-main: #f9fafb;
-    --text-muted: #9ca3af;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
+    --bg: #000000;
+    --surface: #141414;
+    --border: #2e2e2e;
+    --border-hover: #4a4a4a;
+    --text-main: #ffffff;
+    --text-muted: #888888;
     
-    --given-bg: rgba(74, 222, 128, 0.1);
+    /* Яркий фиолетовый акцент, чтобы сразу заметить изменения */
+    --primary: #a855f7; 
+    --primary-hover: #9333ea;
+    --primary-glow: rgba(168, 85, 247, 0.4);
+    
+    --given-bg: rgba(34, 197, 94, 0.15);
     --given-text: #4ade80;
-    --given-border: rgba(74, 222, 128, 0.2);
+    --given-border: rgba(34, 197, 94, 0.3);
     
-    --not-yet-bg: rgba(251, 191, 36, 0.1);
-    --not-yet-text: #fbbf24;
-    --not-yet-border: rgba(251, 191, 36, 0.2);
+    --not-yet-bg: rgba(234, 179, 8, 0.15);
+    --not-yet-text: #facc15;
+    --not-yet-border: rgba(234, 179, 8, 0.3);
     
-    --not-avail-bg: rgba(248, 113, 113, 0.1);
+    --not-avail-bg: rgba(239, 68, 68, 0.15);
     --not-avail-text: #f87171;
-    --not-avail-border: rgba(248, 113, 113, 0.2);
+    --not-avail-border: rgba(239, 68, 68, 0.3);
     
-    --other-bg: rgba(156, 163, 175, 0.1);
-    --other-text: #9ca3af;
-    --other-border: rgba(156, 163, 175, 0.2);
+    --other-bg: rgba(161, 161, 170, 0.15);
+    --other-text: #a1a1aa;
+    --other-border: rgba(161, 161, 170, 0.3);
   }
 
   * { box-sizing: border-box; }
@@ -39,12 +43,16 @@
     padding: 0 16px 90px;
     background-color: var(--bg);
     color: var(--text-main);
-    /* Нативный шрифт, идеально для iOS/iPadOS */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* Округлый системный шрифт для кардинального отличия от старой версии */
+    font-family: ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  .top-bar { height: 6px; background: #ea580c; }
+  .top-bar { 
+    height: 8px; 
+    background: var(--primary); 
+    box-shadow: 0 0 15px var(--primary-glow);
+  }
   
   .wrap { max-width: 800px; margin: 0 auto; padding-top: 32px; }
 
@@ -60,30 +68,30 @@
   }
 
   h1 {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 800;
     letter-spacing: -0.02em;
     margin: 0;
-    color: var(--text-main);
+    color: var(--primary);
   }
 
   .shift-input {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
     color: var(--text-main);
     font-family: inherit;
+    font-weight: 600;
     font-size: 15px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     width: 240px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    transition: border-color 0.15s;
+    transition: all 0.2s;
   }
 
   .shift-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 4px var(--primary-glow);
   }
 
   .summary {
@@ -96,86 +104,86 @@
   .sum-cell {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px 12px;
+    border-radius: 16px;
+    padding: 20px 12px;
     text-align: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
 
-  .sum-num { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-  .sum-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .sum-num { font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+  .sum-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
 
   .panel {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 16px;
     margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     overflow: hidden;
   }
 
   table { width: 100%; border-collapse: collapse; }
   
   thead th {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     color: var(--text-muted);
     text-align: left;
-    padding: 12px 16px;
-    background: var(--bg);
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.02);
     border-bottom: 1px solid var(--border);
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.05em;
   }
 
-  th.col-status, td.col-status { width: 170px; }
-  th.col-del, td.col-del { width: 50px; text-align: center; }
+  th.col-status, td.col-status { width: 180px; }
+  th.col-del, td.col-del { width: 60px; text-align: center; }
   
   tbody tr { border-bottom: 1px solid var(--border); }
   tbody tr:last-child { border-bottom: none; }
-  td { padding: 10px 16px; vertical-align: middle; }
+  td { padding: 12px 20px; vertical-align: middle; }
 
   .unit-input, .note-input {
     width: 100%;
-    background: var(--bg);
-    border: 1px solid transparent;
+    background: transparent;
+    border: 2px solid transparent;
     color: var(--text-main);
     font-family: inherit;
-    font-size: 15px;
-    padding: 10px 12px;
-    border-radius: 6px;
-    transition: all 0.15s;
+    font-size: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    transition: all 0.2s;
   }
   
-  .unit-input { font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  .unit-input { font-weight: 700; font-family: ui-monospace, SFMono-Regular, monospace; }
 
-  .unit-input:hover, .note-input:hover { background: var(--bg); border-color: var(--border); }
+  .unit-input:hover, .note-input:hover { background: rgba(255,255,255,0.03); border-color: var(--border); }
   
   .unit-input:focus, .note-input:focus {
-    background: var(--surface);
+    background: var(--bg);
     border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 0 3px var(--primary-glow);
   }
 
   .status-select {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
+    padding: 12px 14px;
+    border-radius: 10px;
     font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     outline: none;
     cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
     background-repeat: no-repeat;
-    background-position: right 10px center;
-    /* Цвет стрелочки изменен на более светлый для темной темы */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%239ca3af' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    padding-right: 32px;
+    background-position: right 14px center;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%23888888' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    padding-right: 36px;
     border: 1px solid var(--border);
+    transition: transform 0.1s;
   }
+  
+  .status-select:active { transform: scale(0.98); }
 
   .status-select.st-not_yet { background-color: var(--not-yet-bg); color: var(--not-yet-text); border-color: var(--not-yet-border); }
   .status-select.st-given { background-color: var(--given-bg); color: var(--given-text); border-color: var(--given-border); }
@@ -187,42 +195,48 @@
   .del-btn {
     background: none;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     color: var(--border-hover);
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
-    padding: 6px;
+    padding: 8px;
     line-height: 1;
+    transition: all 0.2s;
   }
-  .del-btn:hover { color: #f87171; background: rgba(248, 113, 113, 0.1); }
+  .del-btn:hover { color: #ff4444; background: rgba(255, 68, 68, 0.1); }
 
-  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .actions { display: flex; gap: 16px; flex-wrap: wrap; }
   
   button.action {
     font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
     background: var(--surface);
     color: var(--text-main);
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: all 0.2s;
   }
-  button.action:hover { background: var(--bg); border-color: var(--border-hover); }
+  button.action:hover { background: var(--border); border-color: var(--border-hover); }
+  button.action:active { transform: scale(0.98); }
   
   button.primary {
     background: var(--primary);
     border-color: var(--primary);
     color: #fff;
     flex: 1;
-    font-weight: 600;
+    box-shadow: 0 4px 15px var(--primary-glow);
   }
-  button.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  button.primary:hover { 
+    background: var(--primary-hover); 
+    border-color: var(--primary-hover);
+    box-shadow: 0 6px 20px var(--primary-glow);
+  }
 
-  .save-note { font-size: 13px; color: var(--text-muted); margin-top: 16px; text-align: center; }
-  .pdf-hint { font-size: 13px; color: var(--text-muted); margin-top: 8px; text-align: center; }
+  .save-note { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px; text-align: center; }
+  .pdf-hint { font-size: 13px; color: var(--text-muted); margin-top: 12px; text-align: center; }
 
   /* ---- Print / PDF ---- */
   .print-only { display: none; }
@@ -240,7 +254,7 @@
       padding: 0;
       font-family: sans-serif;
     }
-    .print-only h2 { font-size: 20px; margin: 0 0 4px; }
+    .print-only h2 { font-size: 20px; margin: 0 0 4px; color: #000; }
     .print-only .p-sub { color: #555; font-size: 12px; margin-bottom: 20px; }
     .print-only table { width: 100%; border-collapse: collapse; font-size: 12px; }
     .print-only th, .print-only td { border: 1px solid #ccc; padding: 8px; text-align: left; }
@@ -303,12 +317,11 @@
     other:'Other'
   };
   
-  // Цвета для JS (верхняя статистика) теперь совпадают с темной темой
   const STATUS_HEX = {
-    not_yet:'#fbbf24',
+    not_yet:'#facc15',
     given:'#4ade80',
     not_available:'#f87171',
-    other:'#9ca3af'
+    other:'#a1a1aa'
   };
 
   let trucks = [];
