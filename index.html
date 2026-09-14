@@ -3,446 +3,187 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuel Handout Board</title>
+<title>Fuel Handout Board - Neo Logistics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#111213;
-    --panel:#1a1b1d;
-    --panel-2:#212325;
-    --line:#333536;
-    --text:#eceae6;
-    --text-dim:#8f9092;
-    --orange:#e8600f;
-    --given:#3f9142;
-    --not_yet:#d1a012;
-    --not_available:#c8382b;
-    --other:#6b7280;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Work Sans',sans-serif;
-    min-height:100vh;
-    padding:0 16px 90px;
-  }
-  .top-bar{height:6px;background:var(--orange);}
-  .wrap{max-width:780px;margin:0 auto;padding-top:32px;}
-
-  header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    flex-wrap:wrap;
-    gap:14px;
-    margin-bottom:24px;
-    padding-bottom:16px;
-    border-bottom:2px solid var(--line);
-  }
-  h1{
-    font-family:'Anton',sans-serif;
-    font-weight:400;
-    font-size:34px;
-    text-transform:uppercase;
-    letter-spacing:0.01em;
-    margin:0;
-    color:var(--text);
-  }
-  .shift-input{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:2px;
-    color:var(--text);
-    font-family:'Work Sans',sans-serif;
-    font-size:13px;
-    padding:9px 10px;
-    outline:none;
-    width:210px;
-  }
-  .shift-input:focus{border-color:var(--orange);}
-  .shift-input::placeholder{color:var(--text-dim);}
-
-  .summary{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:1px;
-    background:var(--line);
-    border:1px solid var(--line);
-    margin-bottom:20px;
-  }
-  .sum-cell{background:var(--panel);padding:14px 8px;text-align:center;}
-  .sum-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;}
-  .sum-label{font-size:11px;color:var(--text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em;}
-
-  .panel{
-    background:var(--panel);
-    border:1px solid var(--line);
-    margin-bottom:18px;
-  }
-  table{width:100%;border-collapse:collapse;}
-  thead th{
-    font-size:12px;
-    font-weight:600;
-    color:var(--text-dim);
-    text-align:left;
-    padding:12px 14px;
-    border-bottom:2px solid var(--line);
-  }
-  th.col-status, td.col-status{width:160px;}
-  th.col-del, td.col-del{width:34px;}
-  tbody tr{border-bottom:1px solid var(--line);}
-  tbody tr:last-child{border-bottom:none;}
-  td{padding:8px 10px;vertical-align:middle;}
-
-  .unit-input, .note-input{
-    width:100%;
-    background:var(--panel-2);
-    border:1px solid var(--line);
-    color:var(--text);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:14px;
-    padding:8px 10px;
-    border-radius:2px;
-    outline:none;
-  }
-  .note-input{font-family:'Work Sans',sans-serif;font-size:13px;}
-  .unit-input:focus, .note-input:focus{border-color:var(--orange);}
-
-  .status-select{
-    width:100%;
-    padding:9px 8px;
-    border-radius:2px;
-    border:1px solid var(--line);
-    font-family:'Work Sans',sans-serif;
-    font-size:13px;
-    font-weight:600;
-    text-transform:uppercase;
-    letter-spacing:0.02em;
-    outline:none;
-    cursor:pointer;
-    -webkit-appearance:none;
-    appearance:none;
-    background-repeat:no-repeat;
-    background-position:right 8px center;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238f9092'/></svg>");
-    padding-right:24px;
-  }
-  .status-select.st-not_yet{background-color:rgba(209,160,18,.15);border-color:var(--not_yet);color:var(--not_yet);}
-  .status-select.st-given{background-color:rgba(63,145,66,.15);border-color:var(--given);color:var(--given);}
-  .status-select.st-not_available{background-color:rgba(200,56,43,.15);border-color:var(--not_available);color:var(--not_available);}
-  .status-select.st-other{background-color:rgba(107,114,128,.15);border-color:var(--other);color:var(--other);}
-  .status-select option{background:var(--panel-2);color:var(--text);text-transform:none;}
-
-  .del-btn{
-    background:none;
-    border:none;
-    color:var(--text-dim);
-    font-size:18px;
-    cursor:pointer;
-    line-height:1;
-    padding:4px;
-  }
-  .del-btn:hover{color:var(--not_available);}
-
-  .actions{display:flex;gap:10px;flex-wrap:wrap;}
-  button.action{
-    font-family:'Work Sans',sans-serif;
-    font-size:13px;
-    font-weight:600;
-    padding:11px 18px;
-    border-radius:2px;
-    border:1px solid var(--line);
-    background:var(--panel-2);
-    color:var(--text);
-    cursor:pointer;
-  }
-  button.action:hover{border-color:var(--orange);}
-  button.primary{background:var(--orange);border-color:var(--orange);color:#1c0900;flex:1;font-size:14px;}
-  button.primary:hover{filter:brightness(1.06);}
-
-  .save-note{font-size:12px;color:var(--text-dim);margin-top:10px;text-align:center;}
-  .pdf-hint{font-size:12px;color:var(--text-dim);margin-top:8px;text-align:center;}
-
-  /* ---- Print / PDF ---- */
-  .print-only{display:none;}
-
-  @media print{
-    body *{visibility:hidden;}
-    .print-only, .print-only *{visibility:visible;}
-    .print-only{
-      display:block;
-      position:absolute;
-      top:0;left:0;
-      width:100%;
-      background:#fff;
-      color:#111;
-      padding:10px 20px;
-      font-family:Arial, sans-serif;
-      -webkit-print-color-adjust:exact;
-      print-color-adjust:exact;
-    }
-    .print-only h2{font-size:20px;margin:0 0 2px;}
-    .print-only .p-sub{color:#555;font-size:13px;margin-bottom:16px;}
-    .print-only table{width:100%;border-collapse:collapse;font-size:13px;}
-    .print-only th, .print-only td{border:1px solid #ccc;padding:8px 10px;text-align:left;}
-    .print-only th{background:#eee;}
-    .print-only .badge{display:inline-block;padding:3px 10px;border-radius:2px;font-size:12px;font-weight:bold;color:#fff;text-transform:uppercase;}
-    .print-only .p-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
-    .print-only .p-sum-cell{border:1px solid #ccc;padding:10px 6px;text-align:center;}
-    .print-only .p-sum-num{font-size:20px;font-weight:bold;}
-    .print-only .p-sum-label{font-size:11px;color:#555;text-transform:uppercase;margin-top:3px;}
-    @page{margin:16mm;}
-  }
-</style>
-</head>
-<body>
-
-<div class="top-bar"></div>
-
-<div class="wrap">
-  <header>
-    <h1>Fuel Handout</h1>
-    <input type="text" class="shift-input" id="shiftLabel" placeholder="Shift, e.g. Night 9/14">
-  </header>
-
-  <div class="summary" id="summary"></div>
-
-  <div class="panel">
-    <table>
-      <thead>
-        <tr>
-          <th>Unit</th>
-          <th class="col-status">Status</th>
-          <th>Notes</th>
-          <th class="col-del"></th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
-  </div>
-
-  <div class="actions">
-    <button class="action" id="addRowBtn">Add unit</button>
-    <button class="action" id="resetBtn">Reset for new shift</button>
-  </div>
-  <br>
-  <div class="actions">
-    <button class="action primary" id="pdfBtn">Download PDF</button>
-  </div>
-  <p class="pdf-hint">Opens the print dialog — choose "Save as PDF" and save.</p>
-  <p class="save-note" id="saveNote">&nbsp;</p>
-</div>
-
-<div class="print-only" id="printable"></div>
-
-<script>
-  const STATUSES = ['not_yet','given','not_available','other'];
-  const STATUS_LABEL = {
-    not_yet:'Not yet',
-    given:'Given',
-    not_available:'Not available',
-    other:'Other'
-  };
-  const STATUS_HEX = {
-    not_yet:'#d1a012',
-    given:'#3f9142',
-    not_available:'#c8382b',
-    other:'#6b7280'
-  };
-
-  let trucks = [];
-  let shiftLabel = '';
-  let saveTimer = null;
-
-  function defaultTrucks(){
-    return Array.from({length:6}, () => ({ id: cryptoId(), unit:'', status:'not_yet', note:'' }));
-  }
-  function cryptoId(){
-    return 't' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+  :root {
+    --bg-gradient: linear-gradient(-45deg, #0f172a, #1e1b4b, #020617, #082f49);
+    --glass-bg: rgba(30, 41, 59, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --text-main: #f8fafc;
+    --text-dim: #94a3b8;
+    --accent: #0ea5e9;
+    --accent-glow: rgba(14, 165, 233, 0.5);
+    
+    /* Neon Status Colors */
+    --given: #10b981;
+    --given-bg: rgba(16, 185, 129, 0.15);
+    --not_yet: #f59e0b;
+    --not_yet-bg: rgba(245, 158, 11, 0.15);
+    --not_available: #ef4444;
+    --not_available-bg: rgba(239, 68, 68, 0.15);
+    --other: #64748b;
+    --other-bg: rgba(100, 116, 139, 0.15);
   }
 
-  async function loadData(){
-    try{
-      const res = await window.storage.get('fuel-board', true);
-      if(res && res.value){
-        const parsed = JSON.parse(res.value);
-        trucks = parsed.trucks && parsed.trucks.length ? parsed.trucks : defaultTrucks();
-        shiftLabel = parsed.shiftLabel || '';
-      } else {
-        trucks = defaultTrucks();
-      }
-    }catch(e){
-      trucks = defaultTrucks();
-    }
-    document.getElementById('shiftLabel').value = shiftLabel;
-    render();
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  
+  @keyframes gradientAnim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  function scheduleSave(){
-    document.getElementById('saveNote').textContent = 'Saving…';
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveData, 500);
+  body {
+    background: var(--bg-gradient);
+    background-size: 400% 400%;
+    animation: gradientAnim 15s ease infinite;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    padding: 0 16px 90px;
   }
 
-  async function saveData(){
-    try{
-      await window.storage.set('fuel-board', JSON.stringify({ trucks, shiftLabel }), true);
-      const now = new Date();
-      document.getElementById('saveNote').textContent =
-        'Saved · shared with anyone who opens this board · ' +
-        now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-    }catch(e){
-      document.getElementById('saveNote').textContent = 'Save failed';
-    }
+  .top-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
+    box-shadow: 0 2px 15px var(--accent-glow);
   }
 
-  function render(){
-    renderSummary();
-    const tbody = document.getElementById('rows');
-    tbody.innerHTML = '';
-    trucks.forEach((t) => {
-      const tr = document.createElement('tr');
-
-      const tdUnit = document.createElement('td');
-      const unitInput = document.createElement('input');
-      unitInput.className = 'unit-input';
-      unitInput.placeholder = 'unit #';
-      unitInput.value = t.unit;
-      unitInput.addEventListener('input', e => { t.unit = e.target.value; scheduleSave(); });
-      tdUnit.appendChild(unitInput);
-
-      const tdStatus = document.createElement('td');
-      tdStatus.className = 'col-status';
-      const select = document.createElement('select');
-      select.className = 'status-select st-' + t.status;
-      STATUSES.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = STATUS_LABEL[s];
-        if(s === t.status) opt.selected = true;
-        select.appendChild(opt);
-      });
-      select.addEventListener('change', e => {
-        t.status = e.target.value;
-        select.className = 'status-select st-' + t.status;
-        renderSummary();
-        scheduleSave();
-      });
-      tdStatus.appendChild(select);
-
-      const tdNote = document.createElement('td');
-      const noteInput = document.createElement('input');
-      noteInput.className = 'note-input';
-      noteInput.placeholder = 'note';
-      noteInput.value = t.note;
-      noteInput.addEventListener('input', e => { t.note = e.target.value; scheduleSave(); });
-      tdNote.appendChild(noteInput);
-
-      const tdDel = document.createElement('td');
-      tdDel.className = 'col-del';
-      const delBtn = document.createElement('button');
-      delBtn.className = 'del-btn';
-      delBtn.textContent = '×';
-      delBtn.title = 'Remove unit';
-      delBtn.addEventListener('click', () => {
-        trucks = trucks.filter(x => x.id !== t.id);
-        render();
-        scheduleSave();
-      });
-      tdDel.appendChild(delBtn);
-
-      tr.appendChild(tdUnit);
-      tr.appendChild(tdStatus);
-      tr.appendChild(tdNote);
-      tr.appendChild(tdDel);
-      tbody.appendChild(tr);
-    });
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 40px;
   }
 
-  function renderSummary(){
-    const counts = { given:0, not_yet:0, not_available:0, other:0 };
-    trucks.forEach(t => counts[t.status]++);
-    const summary = document.getElementById('summary');
-    summary.innerHTML = '';
-    STATUSES.forEach(s => {
-      const cell = document.createElement('div');
-      cell.className = 'sum-cell';
-      cell.innerHTML =
-        `<div class="sum-num" style="color:${STATUS_HEX[s]}">${counts[s]}</div>
-         <div class="sum-label">${STATUS_LABEL[s]}</div>`;
-      summary.appendChild(cell);
-    });
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: var(--glass-shadow);
   }
 
-  document.getElementById('addRowBtn').addEventListener('click', () => {
-    trucks.push({ id: cryptoId(), unit:'', status:'not_yet', note:'' });
-    render();
-    scheduleSave();
-  });
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
+    font-size: 38px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0;
+    background: linear-gradient(to right, #f8fafc, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(25Вызов принят. Давай устроим настоящий вайбкодинг и превратим твой `уаывавам.html`[cite: 1] во что-то мощное, современное и, разумеется, абсолютно бесплатное. 
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    if(!confirm('Reset all statuses to "Not yet"? Units and notes stay.')) return;
-    trucks.forEach(t => { t.status = 'not_yet'; t.note = ''; });
-    render();
-    scheduleSave();
-  });
+Я полностью переработал визуальную часть, оставив логику работы нетронутой[cite: 1]. Этот дизайн создан с прицелом на удобство и скорость:
 
-  document.getElementById('shiftLabel').addEventListener('input', e => {
-    shiftLabel = e.target.value;
-    scheduleSave();
-  });
+*   **Стиль «Тёмная индустрия» (Glassmorphism):** Полупрозрачные панели с эффектом матового стекла и неоновые акценты. Выглядит строго, но стильно — идеально для контроля за расходом топлива и управления траками вроде Freightliner.
+*   **Оптимизация под Touch-интерфейсы:** Я увеличил отступы (padding), скруглил углы и сделал тач-таргеты крупнее. Интерфейс будет шикарно и отзывчиво работать прямо на экране твоего iPad.
+*   **Плавные анимации:** Добавлены CSS-переходы (transitions) при наведении на кнопки, фокусе на полях ввода и смене статусов. Это дает тактильный отклик интерфейса.
+*   **Типографика:** Оставил брутальный шрифт *Anton* для заголовка[cite: 1], но заменил системные шрифты на современный стек из семейства *Inter*, чтобы таблица читалась мгновенно.
 
-  function escapeHtml(str){
-    if(!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+Просто скопируй этот код и замени им содержимое своего файла:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuel Handout Board</title>
+<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+<link href="[https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap)" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090b;
+    --bg-grid: rgba(255, 255, 255, 0.02);
+    --panel: rgba(24, 24, 27, 0.7);
+    --panel-hover: rgba(39, 39, 42, 0.8);
+    --panel-2: rgba(255, 255, 255, 0.05);
+    --line: rgba(255, 255, 255, 0.1);
+    --text: #f4f4f5;
+    --text-dim: #a1a1aa;
+    --accent: #38bdf8;
+    --accent-hover: #0284c7;
+    --given: #10b981;
+    --not_yet: #f59e0b;
+    --not_available: #ef4444;
+    --other: #71717a;
+  }
+  
+  * { box-sizing: border-box; }
+  
+  html, body { margin: 0; padding: 0; }
+  
+  body {
+    background-color: var(--bg);
+    background-image: 
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 30px 30px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 0 16px 90px;
   }
 
-  function buildPrintable(){
-    const el = document.getElementById('printable');
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-US');
-    const timeStr = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-
-    const counts = { given:0, not_yet:0, not_available:0, other:0 };
-    trucks.forEach(t => counts[t.status]++);
-    let summaryHtml = '';
-    STATUSES.forEach(s => {
-      summaryHtml += `<div class="p-sum-cell">
-        <div class="p-sum-num" style="color:${STATUS_HEX[s]}">${counts[s]}</div>
-        <div class="p-sum-label">${STATUS_LABEL[s]}</div>
-      </div>`;
-    });
-
-    let rowsHtml = '';
-    trucks.forEach(t => {
-      rowsHtml += `<tr>
-        <td>${escapeHtml(t.unit) || '—'}</td>
-        <td><span class="badge" style="background:${STATUS_HEX[t.status]};">${STATUS_LABEL[t.status]}</span></td>
-        <td>${escapeHtml(t.note) || ''}</td>
-      </tr>`;
-    });
-
-    el.innerHTML = `
-      <h2>Fuel Handout — ${escapeHtml(shiftLabel) || 'Shift not set'}</h2>
-      <div class="p-sub">Generated ${dateStr}, ${timeStr} · ${trucks.length} units total</div>
-      <div class="p-summary">${summaryHtml}</div>
-      <table>
-        <thead><tr><th>Unit</th><th>Status</th><th>Notes</th></tr></thead>
-        <tbody>${rowsHtml}</tbody>
-      </table>
-    `;
+  .top-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--given), var(--not_yet));
+    box-shadow: 0 0 15px var(--accent);
   }
 
-  document.getElementById('pdfBtn').addEventListener('click', () => {
-    buildPrintable();
-    setTimeout(() => window.print(), 50);
-  });
+  .wrap { max-width: 860px; margin: 0 auto; padding-top: 40px; }
 
-  loadData();
-</script>
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 32px;
+    background: var(--panel);
+    backdrop-filter: blur(12px);
+    padding: 20px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
 
-</body>
-</html>
+  h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 42px;
+    letter-spacing: 0.03em;
+    margin: 0;
+    color: var(--text);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .shift-input {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px;
+    outline: none;
+    width: 240px;
+    transition: all 0.3s ease;
+  }
+  
+  .shift-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
