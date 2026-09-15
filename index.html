@@ -3,249 +3,318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fuel Handout</title>
+<title>Fuel Handout Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Мягкие темно-серые цвета (Apple Dark Mode), не глубокий черный */
-    --bg: #1c1c1e;
-    --surface: #2c2c2e;
-    --border: #38383a;
-    --border-hover: #48484a;
-    --text-main: #f2f2f7;
-    --text-muted: #8e8e93;
-    
-    /* Спокойный синий для активных элементов */
-    --primary: #0a84ff;
-    --primary-hover: #007aff;
-    
-    /* Приглушенные цвета для статусов, без неона */
-    --given-bg: #1e3625;
-    --given-text: #30d158;
-    --given-border: #24462e;
-    
-    --not-yet-bg: #3d2d14;
-    --not-yet-text: #ffd60a;
-    --not-yet-border: #4d3816;
-    
-    --not-avail-bg: #3b181a;
-    --not-avail-text: #ff453a;
-    --not-avail-border: #4a1d20;
-    
-    --other-bg: #2c2c2e;
-    --other-text: #8e8e93;
-    --other-border: #38383a;
+  :root{
+    --bg:#111213;
+    --panel:#1a1b1d;
+    --panel-2:#212325;
+    --line:#333536;
+    --text:#eceae6;
+    --text-dim:#8f9092;
+    --orange:#e8600f;
+    --given:#3f9142;
+    --not_yet:#d1a012;
+    --not_available:#c8382b;
+    --other:#6b7280;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Work Sans',sans-serif;
+    min-height:100vh;
+    padding:0 16px 90px;
+  }
+  .top-bar{height:6px;background:var(--orange);}
+  .wrap{max-width:780px;margin:0 auto;padding-top:32px;}
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:34px;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    margin:0;
+    color:var(--text);
   }
 
-  * { box-sizing: border-box; }
-  
-  body {
-    margin: 0;
-    padding: 0 16px 90px;
-    background-color: var(--bg);
-    color: var(--text-main);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+  /* Tabs */
+  nav.tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:24px;
+    padding-bottom:16px;
+    border-bottom:2px solid var(--line);
   }
-
-  .top-bar { 
-    height: 6px; 
-    background: var(--primary); 
+  .tab-btn{
+    font-family:'Work Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:10px 16px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--text-dim);
+    cursor:pointer;
+    border-radius:2px;
   }
-  
-  .wrap { max-width: 800px; margin: 0 auto; padding-top: 32px; }
+  .tab-btn.active{background:var(--orange);border-color:var(--orange);color:#1c0900;}
+  .tab-btn:hover:not(.active){border-color:var(--orange);color:var(--text);}
 
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid var(--border);
+  .page{display:none;}
+  .page.active{display:block;}
+
+  .shift-input{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:2px;
+    color:var(--text);
+    font-family:'Work Sans',sans-serif;
+    font-size:13px;
+    padding:9px 10px;
+    outline:none;
+    width:210px;
   }
+  .shift-input:focus{border-color:var(--orange);}
+  .shift-input::placeholder{color:var(--text-dim);}
 
-  h1 {
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0;
-    color: var(--text-main);
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-bottom:20px;
   }
+  .sum-cell{background:var(--panel);padding:14px 8px;text-align:center;}
+  .sum-num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;}
+  .sum-label{font-size:11px;color:var(--text-dim);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em;}
 
-  .shift-input {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-main);
-    font-family: inherit;
-    font-size: 15px;
-    padding: 10px 14px;
-    width: 240px;
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    margin-bottom:18px;
   }
-
-  .shift-input:focus {
-    outline: none;
-    border-color: var(--primary);
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-dim);
+    text-align:left;
+    padding:12px 14px;
+    border-bottom:2px solid var(--line);
   }
+  th.col-status, td.col-status{width:160px;}
+  th.col-del, td.col-del{width:34px;}
+  th.col-handle, td.col-handle{width:30px;}
+  tbody tr{border-bottom:1px solid var(--line);}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr.dragging{opacity:0.4;background:var(--panel-2);}
+  tbody tr.drag-over{box-shadow:inset 0 2px 0 var(--orange);}
+  td{padding:8px 10px;vertical-align:middle;}
 
-  .summary {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
+  .drag-handle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:28px;
+    color:var(--text-dim);
+    font-size:16px;
+    line-height:1;
+    cursor:grab;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
   }
+  .drag-handle:active{cursor:grabbing;color:var(--orange);}
 
-  .sum-cell {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px 12px;
-    text-align: center;
+  .unit-input, .note-input{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;
+    padding:8px 10px;
+    border-radius:2px;
+    outline:none;
   }
+  .note-input{font-family:'Work Sans',sans-serif;font-size:13px;}
+  .unit-input:focus, .note-input:focus{border-color:var(--orange);}
 
-  .sum-num { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-  .sum-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 24px;
-    overflow: hidden;
+  .status-select{
+    width:100%;
+    padding:9px 8px;
+    border-radius:2px;
+    border:1px solid var(--line);
+    font-family:'Work Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    outline:none;
+    cursor:pointer;
+    -webkit-appearance:none;
+    appearance:none;
+    background-repeat:no-repeat;
+    background-position:right 8px center;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238f9092'/></svg>");
+    padding-right:24px;
   }
+  .status-select.st-not_yet{background-color:rgba(209,160,18,.15);border-color:var(--not_yet);color:var(--not_yet);}
+  .status-select.st-given{background-color:rgba(63,145,66,.15);border-color:var(--given);color:var(--given);}
+  .status-select.st-not_available{background-color:rgba(200,56,43,.15);border-color:var(--not_available);color:var(--not_available);}
+  .status-select.st-other{background-color:rgba(107,114,128,.15);border-color:var(--other);color:var(--other);}
+  .status-select option{background:var(--panel-2);color:var(--text);text-transform:none;}
 
-  table { width: 100%; border-collapse: collapse; }
-  
-  thead th {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-align: left;
-    padding: 12px 16px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    text-transform: uppercase;
+  .del-btn{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:18px;
+    cursor:pointer;
+    line-height:1;
+    padding:4px;
   }
+  .del-btn:hover{color:var(--not_available);}
 
-  th.col-status, td.col-status { width: 170px; }
-  th.col-del, td.col-del { width: 50px; text-align: center; }
-  
-  tbody tr { border-bottom: 1px solid var(--border); }
-  tbody tr:last-child { border-bottom: none; }
-  td { padding: 10px 16px; vertical-align: middle; }
-
-  .unit-input, .note-input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid transparent;
-    color: var(--text-main);
-    font-family: inherit;
-    font-size: 15px;
-    padding: 10px 12px;
-    border-radius: 6px;
+  .actions{display:flex;gap:10px;flex-wrap:wrap;}
+  button.action{
+    font-family:'Work Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:11px 18px;
+    border-radius:2px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--text);
+    cursor:pointer;
   }
-  
-  .unit-input { font-weight: 600; font-family: ui-monospace, monospace; }
+  button.action:hover{border-color:var(--orange);}
+  button.primary{background:var(--orange);border-color:var(--orange);color:#1c0900;flex:1;font-size:14px;}
+  button.primary:hover{filter:brightness(1.06);}
 
-  .unit-input:hover, .note-input:hover { border-color: var(--border); }
-  
-  .unit-input:focus, .note-input:focus {
-    background: var(--bg);
-    border-color: var(--primary);
-    outline: none;
+  .save-note{font-size:12px;color:var(--text-dim);margin-top:10px;text-align:center;}
+  .pdf-hint{font-size:12px;color:var(--text-dim);margin-top:8px;text-align:center;}
+
+  /* ---- Calculator page ---- */
+  .calc-wrap{max-width:460px;margin:0 auto;}
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:28px 24px 6px;}
+  .gauge-panel{padding:0;}
+  svg{display:block;}
+  .gauge-readout{margin-top:-14px;text-align:center;padding-bottom:24px;}
+  .range-value{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:44px;
+    font-weight:700;
+    color:var(--orange);
+    letter-spacing:-0.01em;
   }
-
-  .status-select {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    outline: none;
-    cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%238e8e93' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-    padding-right: 32px;
-    border: 1px solid var(--border);
+  .range-unit{
+    font-family:'Work Sans',sans-serif;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-top:2px;
   }
-
-  .status-select.st-not_yet { background-color: var(--not-yet-bg); color: var(--not-yet-text); border-color: var(--not-yet-border); }
-  .status-select.st-given { background-color: var(--given-bg); color: var(--given-text); border-color: var(--given-border); }
-  .status-select.st-not_available { background-color: var(--not-avail-bg); color: var(--not-avail-text); border-color: var(--not-avail-border); }
-  .status-select.st-other { background-color: var(--other-bg); color: var(--other-text); border-color: var(--other-border); }
-  
-  .status-select option { background: var(--surface); color: var(--text-main); }
-
-  .del-btn {
-    background: none;
-    border: none;
-    border-radius: 4px;
-    color: var(--text-muted);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 6px;
-    line-height: 1;
+  .calc-fields{padding:24px 24px 20px;}
+  .field{margin-bottom:22px;}
+  .field:last-child{margin-bottom:0;}
+  .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .field-top label{font-family:'Work Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+  .field-val{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--orange);}
+  input[type="number"]{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:16px;
+    padding:10px 12px;
+    border-radius:2px;
+    outline:none;
   }
-  .del-btn:hover { color: #ff453a; }
-
-  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
-  
-  button.action {
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-main);
-    cursor: pointer;
+  input[type="number"]:focus{border-color:var(--orange);}
+  input[type="range"]{
+    width:100%;
+    -webkit-appearance:none;
+    height:4px;
+    background:var(--line);
+    border-radius:2px;
+    outline:none;
   }
-  button.action:hover { background: var(--border); }
-  
-  button.primary {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-    flex: 1;
-    font-weight: 600;
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:18px;height:18px;
+    border-radius:50%;
+    background:var(--orange);
+    cursor:pointer;
+    border:3px solid var(--panel);
+    box-shadow:0 0 0 1px var(--line);
   }
-  button.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
-
-  .save-note { font-size: 13px; color: var(--text-muted); margin-top: 16px; text-align: center; }
-  .pdf-hint { font-size: 13px; color: var(--text-muted); margin-top: 8px; text-align: center; }
+  input[type="range"]::-moz-range-thumb{
+    width:18px;height:18px;
+    border-radius:50%;
+    background:var(--orange);
+    cursor:pointer;
+    border:3px solid var(--panel);
+  }
+  .calc-hint{font-size:12px;color:var(--text-dim);margin-top:8px;}
+  .calc-stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .calc-stat{background:var(--panel);padding:16px 18px;}
+  .calc-stat-label{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+  .calc-stat-value{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--text);}
+  .calc-stat-value.warn{color:var(--not_available);}
+  .calc-footer{margin-top:16px;font-size:12px;color:var(--text-dim);text-align:center;}
 
   /* ---- Print / PDF ---- */
-  .print-only { display: none; }
+  .print-only{display:none;}
 
-  @media print {
-    body * { visibility: hidden; }
-    .print-only, .print-only * { visibility: visible; }
-    .print-only {
-      display: block;
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      background: #fff;
-      color: #000;
-      padding: 0;
-      font-family: sans-serif;
+  @media print{
+    body *{visibility:hidden;}
+    .print-only, .print-only *{visibility:visible;}
+    .print-only{
+      display:block;
+      position:absolute;
+      top:0;left:0;
+      width:100%;
+      background:#fff;
+      color:#111;
+      padding:10px 20px;
+      font-family:Arial, sans-serif;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
     }
-    .print-only h2 { font-size: 20px; margin: 0 0 4px; }
-    .print-only .p-sub { color: #555; font-size: 12px; margin-bottom: 20px; }
-    .print-only table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .print-only th, .print-only td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    .print-only th { background: #f5f5f5; font-weight: bold; }
-    .print-only .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc; font-size: 11px; font-weight: bold; }
-    .print-only .p-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
-    .print-only .p-sum-cell { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    .print-only .p-sum-num { font-size: 18px; font-weight: bold; }
-    .print-only .p-sum-label { font-size: 10px; color: #555; text-transform: uppercase; margin-top: 4px; }
-    @page { margin: 16mm; }
+    .print-only h2{font-size:20px;margin:0 0 2px;}
+    .print-only .p-sub{color:#555;font-size:13px;margin-bottom:16px;}
+    .print-only table{width:100%;border-collapse:collapse;font-size:13px;}
+    .print-only th, .print-only td{border:1px solid #ccc;padding:8px 10px;text-align:left;}
+    .print-only th{background:#eee;}
+    .print-only .badge{display:inline-block;padding:3px 10px;border-radius:2px;font-size:12px;font-weight:bold;color:#fff;text-transform:uppercase;}
+    .print-only .p-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+    .print-only .p-sum-cell{border:1px solid #ccc;padding:10px 6px;text-align:center;}
+    .print-only .p-sum-num{font-size:20px;font-weight:bold;}
+    .print-only .p-sum-label{font-size:11px;color:#555;text-transform:uppercase;margin-top:3px;}
+    @page{margin:16mm;}
   }
 </style>
 </head>
@@ -256,40 +325,130 @@
 <div class="wrap">
   <header>
     <h1>Fuel Handout</h1>
-    <input type="text" class="shift-input" id="shiftLabel" placeholder="Shift, e.g. Night 9/14">
   </header>
 
-  <div class="summary" id="summary"></div>
+  <nav class="tabs">
+    <button class="tab-btn active" id="tab-board" onclick="showPage('board')">Fuel Board</button>
+    <button class="tab-btn" id="tab-calc" onclick="showPage('calc')">Range Calculator</button>
+  </nav>
 
-  <div class="panel">
-    <table>
-      <thead>
-        <tr>
-          <th>Unit</th>
-          <th class="col-status">Status</th>
-          <th>Notes</th>
-          <th class="col-del"></th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
+  <!-- ================= PAGE 1: BOARD ================= -->
+  <div class="page active" id="page-board">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+      <input type="text" class="shift-input" id="shiftLabel" placeholder="Shift, e.g. Night 9/14">
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-handle"></th>
+            <th>Unit</th>
+            <th class="col-status">Status</th>
+            <th>Notes</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button class="action" id="addRowBtn">Add unit</button>
+      <button class="action" id="resetBtn">Reset for new shift</button>
+    </div>
+    <br>
+    <div class="actions">
+      <button class="action primary" id="pdfBtn">Download PDF</button>
+    </div>
+    <p class="pdf-hint">Opens the print dialog — choose "Save as PDF" and save.</p>
+    <p class="save-note" id="saveNote">&nbsp;</p>
   </div>
 
-  <div class="actions">
-    <button class="action" id="addRowBtn">+ Add unit</button>
-    <button class="action" id="resetBtn">Reset shift</button>
+  <!-- ================= PAGE 2: CALCULATOR ================= -->
+  <div class="page" id="page-calc">
+    <div class="calc-wrap">
+      <div class="panel gauge-panel">
+        <div class="gauge-wrap">
+          <svg id="gaugeSvg" viewBox="0 0 300 170" width="300" height="170">
+            <path d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#333536" stroke-width="14" stroke-linecap="round"/>
+            <path id="gaugeFill" d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#e8600f" stroke-width="14" stroke-linecap="round"/>
+            <line x1="30" y1="150" x2="42" y2="150" stroke="#8f9092" stroke-width="2"/>
+            <line x1="150" y1="30" x2="150" y2="42" stroke="#8f9092" stroke-width="2"/>
+            <line x1="270" y1="150" x2="258" y2="150" stroke="#8f9092" stroke-width="2"/>
+            <text x="26" y="168" fill="#8f9092" font-family="Work Sans, sans-serif" font-size="14" font-weight="700">E</text>
+            <text x="266" y="168" fill="#8f9092" font-family="Work Sans, sans-serif" font-size="14" font-weight="700">F</text>
+            <g id="needle" transform="rotate(0 150 150)">
+              <line x1="150" y1="150" x2="150" y2="48" stroke="#eceae6" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="150" cy="150" r="7" fill="#eceae6"/>
+            </g>
+          </svg>
+          <div class="gauge-readout">
+            <div class="range-value" id="rangeValue">0</div>
+            <div class="range-unit">Miles of range</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="calc-fields">
+          <div class="field">
+            <div class="field-top">
+              <label for="tankSize">Tank size</label>
+              <span class="field-val"><span id="tankSizeVal">300</span> gal</span>
+            </div>
+            <input type="number" id="tankSize" value="300" min="1" step="1">
+            <p class="calc-hint">Combined capacity of both Cascadia saddle tanks — usually 120–150 gal each.</p>
+          </div>
+
+          <div class="field">
+            <div class="field-top">
+              <label for="fuelPct">Fuel level</label>
+              <span class="field-val" id="fuelPctVal">75%</span>
+            </div>
+            <input type="range" id="fuelPct" min="0" max="100" value="75" step="1">
+          </div>
+
+          <div class="field">
+            <div class="field-top">
+              <label for="mpg">Fuel economy</label>
+              <span class="field-val"><span id="mpgVal">6.5</span> mpg</span>
+            </div>
+            <input type="number" id="mpg" value="6.5" min="0.1" step="0.1">
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-stats">
+        <div class="calc-stat">
+          <div class="calc-stat-label">Fuel left</div>
+          <div class="calc-stat-value" id="gallonsLeft">225 gal</div>
+        </div>
+        <div class="calc-stat">
+          <div class="calc-stat-label">Range left</div>
+          <div class="calc-stat-value" id="rangeMiles">1463 mi</div>
+        </div>
+      </div>
+
+      <p class="calc-footer">Estimate only — actual range depends on load, terrain and weather.</p>
+    </div>
   </div>
-  <br>
-  <div class="actions">
-    <button class="action primary" id="pdfBtn">Download PDF Report</button>
-  </div>
-  <p class="pdf-hint">Opens the print dialog — choose "Save as PDF" and save.</p>
-  <p class="save-note" id="saveNote">&nbsp;</p>
 </div>
 
 <div class="print-only" id="printable"></div>
 
 <script>
+  /* ---------- Tab switching ---------- */
+  function showPage(name){
+    document.getElementById('page-board').classList.toggle('active', name === 'board');
+    document.getElementById('page-calc').classList.toggle('active', name === 'calc');
+    document.getElementById('tab-board').classList.toggle('active', name === 'board');
+    document.getElementById('tab-calc').classList.toggle('active', name === 'calc');
+  }
+
+  /* ---------- Fuel Board ---------- */
   const STATUSES = ['not_yet','given','not_available','other'];
   const STATUS_LABEL = {
     not_yet:'Not yet',
@@ -297,12 +456,11 @@
     not_available:'Not available',
     other:'Other'
   };
-  
   const STATUS_HEX = {
-    not_yet:'#ffd60a',
-    given:'#30d158',
-    not_available:'#ff453a',
-    other:'#8e8e93'
+    not_yet:'#d1a012',
+    given:'#3f9142',
+    not_available:'#c8382b',
+    other:'#6b7280'
   };
 
   let trucks = [];
@@ -344,7 +502,8 @@
       await window.storage.set('fuel-board', JSON.stringify({ trucks, shiftLabel }), true);
       const now = new Date();
       document.getElementById('saveNote').textContent =
-        'Saved · ' + now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+        'Saved · shared with anyone who opens this board · ' +
+        now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
     }catch(e){
       document.getElementById('saveNote').textContent = 'Save failed';
     }
@@ -356,11 +515,20 @@
     tbody.innerHTML = '';
     trucks.forEach((t) => {
       const tr = document.createElement('tr');
+      tr.dataset.id = t.id;
+
+      const tdHandle = document.createElement('td');
+      tdHandle.className = 'col-handle';
+      const handle = document.createElement('span');
+      handle.className = 'drag-handle';
+      handle.textContent = '⠿';
+      handle.addEventListener('pointerdown', e => startDrag(e, tr));
+      tdHandle.appendChild(handle);
 
       const tdUnit = document.createElement('td');
       const unitInput = document.createElement('input');
       unitInput.className = 'unit-input';
-      unitInput.placeholder = 'Unit #';
+      unitInput.placeholder = 'unit #';
       unitInput.value = t.unit;
       unitInput.addEventListener('input', e => { t.unit = e.target.value; scheduleSave(); });
       tdUnit.appendChild(unitInput);
@@ -387,7 +555,7 @@
       const tdNote = document.createElement('td');
       const noteInput = document.createElement('input');
       noteInput.className = 'note-input';
-      noteInput.placeholder = 'Add a note...';
+      noteInput.placeholder = 'note';
       noteInput.value = t.note;
       noteInput.addEventListener('input', e => { t.note = e.target.value; scheduleSave(); });
       tdNote.appendChild(noteInput);
@@ -396,8 +564,8 @@
       tdDel.className = 'col-del';
       const delBtn = document.createElement('button');
       delBtn.className = 'del-btn';
-      delBtn.innerHTML = '×';
-      delBtn.title = 'Remove row';
+      delBtn.textContent = '×';
+      delBtn.title = 'Remove unit';
       delBtn.addEventListener('click', () => {
         trucks = trucks.filter(x => x.id !== t.id);
         render();
@@ -405,6 +573,7 @@
       });
       tdDel.appendChild(delBtn);
 
+      tr.appendChild(tdHandle);
       tr.appendChild(tdUnit);
       tr.appendChild(tdStatus);
       tr.appendChild(tdNote);
@@ -435,8 +604,8 @@
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    if(!confirm('Reset all statuses to "Not yet"? Units and notes will remain.')) return;
-    trucks.forEach(t => { t.status = 'not_yet'; });
+    if(!confirm('Reset all statuses to "Not yet"? Units and notes stay.')) return;
+    trucks.forEach(t => { t.status = 'not_yet'; t.note = ''; });
     render();
     scheduleSave();
   });
@@ -445,6 +614,64 @@
     shiftLabel = e.target.value;
     scheduleSave();
   });
+
+  /* ---------- Drag to reorder ---------- */
+  let dragTr = null;
+  let dragPointerId = null;
+
+  function startDrag(e, tr){
+    e.preventDefault();
+    dragTr = tr;
+    dragPointerId = e.pointerId;
+    tr.classList.add('dragging');
+    e.target.setPointerCapture(e.pointerId);
+    e.target.addEventListener('pointermove', onDragMove);
+    e.target.addEventListener('pointerup', onDragEnd);
+    e.target.addEventListener('pointercancel', onDragEnd);
+  }
+
+  function onDragMove(e){
+    if(!dragTr) return;
+    const tbody = document.getElementById('rows');
+    const rows = Array.from(tbody.children).filter(r => r !== dragTr);
+    const y = e.clientY;
+
+    rows.forEach(r => r.classList.remove('drag-over'));
+
+    for(const row of rows){
+      const rect = row.getBoundingClientRect();
+      if(y >= rect.top && y <= rect.bottom){
+        row.classList.add('drag-over');
+        const dragIndex = Array.from(tbody.children).indexOf(dragTr);
+        const rowIndex = Array.from(tbody.children).indexOf(row);
+        if(dragIndex > rowIndex){
+          tbody.insertBefore(dragTr, row);
+        } else {
+          tbody.insertBefore(dragTr, row.nextSibling);
+        }
+        break;
+      }
+    }
+  }
+
+  function onDragEnd(e){
+    if(!dragTr) return;
+    e.target.releasePointerCapture(dragPointerId);
+    e.target.removeEventListener('pointermove', onDragMove);
+    e.target.removeEventListener('pointerup', onDragEnd);
+    e.target.removeEventListener('pointercancel', onDragEnd);
+
+    dragTr.classList.remove('dragging');
+    const tbody = document.getElementById('rows');
+    Array.from(tbody.children).forEach(r => r.classList.remove('drag-over'));
+
+    const newOrderIds = Array.from(tbody.children).map(r => r.dataset.id);
+    trucks.sort((a, b) => newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id));
+
+    dragTr = null;
+    dragPointerId = null;
+    scheduleSave();
+  }
 
   function escapeHtml(str){
     if(!str) return '';
@@ -471,7 +698,7 @@
     trucks.forEach(t => {
       rowsHtml += `<tr>
         <td>${escapeHtml(t.unit) || '—'}</td>
-        <td><span class="badge" style="color:${STATUS_HEX[t.status]}">${STATUS_LABEL[t.status]}</span></td>
+        <td><span class="badge" style="background:${STATUS_HEX[t.status]};">${STATUS_LABEL[t.status]}</span></td>
         <td>${escapeHtml(t.note) || ''}</td>
       </tr>`;
     });
@@ -493,6 +720,54 @@
   });
 
   loadData();
+
+  /* ---------- Range Calculator ---------- */
+  const tankSize = document.getElementById('tankSize');
+  const fuelPct = document.getElementById('fuelPct');
+  const mpg = document.getElementById('mpg');
+
+  const tankSizeVal = document.getElementById('tankSizeVal');
+  const fuelPctVal = document.getElementById('fuelPctVal');
+  const mpgVal = document.getElementById('mpgVal');
+
+  const gallonsLeft = document.getElementById('gallonsLeft');
+  const rangeMiles = document.getElementById('rangeMiles');
+  const rangeValue = document.getElementById('rangeValue');
+  const needle = document.getElementById('needle');
+  const gaugeFill = document.getElementById('gaugeFill');
+
+  const ARC_LENGTH = 300;
+
+  function recalc(){
+    const tank = parseFloat(tankSize.value) || 0;
+    const pct = parseFloat(fuelPct.value) || 0;
+    const economy = parseFloat(mpg.value) || 0;
+
+    const gallons = tank * (pct / 100);
+    const miles = gallons * economy;
+
+    tankSizeVal.textContent = tank;
+    fuelPctVal.textContent = pct + '%';
+    mpgVal.textContent = economy;
+
+    gallonsLeft.textContent = round1(gallons) + ' gal';
+    gallonsLeft.classList.toggle('warn', pct <= 15);
+    rangeMiles.textContent = round1(miles) + ' mi';
+    rangeValue.textContent = round1(miles);
+
+    const angle = (pct / 100) * 180 - 90;
+    needle.setAttribute('transform', `rotate(${angle} 150 150)`);
+
+    gaugeFill.setAttribute('stroke-dasharray', `${ARC_LENGTH * (pct/100)} ${ARC_LENGTH}`);
+    gaugeFill.setAttribute('stroke', pct <= 15 ? '#c8382b' : '#e8600f');
+  }
+
+  function round1(n){
+    return Math.round(n * 10) / 10;
+  }
+
+  [tankSize, fuelPct, mpg].forEach(el => el.addEventListener('input', recalc));
+  recalc();
 </script>
 
 </body>
