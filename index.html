@@ -468,7 +468,18 @@
   let saveTimer = null;
 
   function defaultTrucks(){
-    return Array.from({length:6}, () => ({ id: cryptoId(), unit:'', status:'not_yet', note:'' }));
+    const units = [
+      '1OY','002OY','003OY','004OY','005OY',
+      '800','801','802','803',
+      '1520','1521','1522','1523','1524','1525','719','1526','1527','1528','1532','5279',
+      '711','712','713','714','715','716','717','719','720','721','722','723','724','725',
+      '726','727','728','729','730','731',
+      '003AK','004AK','005AK','006AK',
+      '3102','3103','3104','3105','3106','3107',
+      '633317',
+      '202','203','204','205','206'
+    ];
+    return units.map(u => ({ id: cryptoId(), unit: u, status:'not_yet', note:'' }));
   }
   function cryptoId(){
     return 't' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
